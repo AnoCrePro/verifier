@@ -4,6 +4,7 @@ include "../node_modules/circomlib/circuits/mimc.circom";
 include "../node_modules/circomlib/circuits/switcher.circom";
 include "./mimc.circom";
 include "../node_modules/circomlib/circuits/poseidon.circom";
+include "../node_modules/circomlib/circuits/comparators.circom";
 
 template SelectiveSwitch() {
   signal input in0;
@@ -33,30 +34,31 @@ template Node () {
 
 
 template Verifier(depth) {
-  signal input main_pub;
-  signal input sub_pub;
-  signal input user_info;
-  signal input auth_hash;
-  signal input credit_score;
-  signal input timestamp;
-  signal input root;
-  signal input cur_timestamp;
+  signal input mainPub; //
+  signal input subPub; //
+  signal input userInfo; //
+  signal input authHash; //
+  signal input creditScore; //
+  signal input timestamp; //
+  signal input root; //
+  signal input verifyTimestamp;
+  signal input signature;
   signal input condition;
-  signal input direction[depth];
-  signal input siblings[depth];
+  signal input direction[depth]; //
+  signal input siblings[depth]; //
 
   // Check owner by auth hash 
   component MimcMulti = MultiMimc7(3, 91);
-  MimcMulti.in[0] <== main_pub;
-  MimcMulti.in[1] <== sub_pub;
-  MimcMulti.in[2] <== user_info;
+  MimcMulti.in[0] <== mainPub;
+  MimcMulti.in[1] <== subPub;
+  MimcMulti.in[2] <== userInfo;
   MimcMulti.k <== 0;
   
-  auth_hash === MimcMulti.out;
+  authHash === MimcMulti.out;
 
   component MimcMultiLeaf = MultiMimc7(3, 91);
-  MimcMultiLeaf.in[0] <== auth_hash;
-  MimcMultiLeaf.in[1] <== credit_score;
+  MimcMultiLeaf.in[0] <== authHash;
+  MimcMultiLeaf.in[1] <== creditScore;
   MimcMultiLeaf.in[2] <== timestamp;
   MimcMultiLeaf.k <== 0;
   // component Mimc = Mimc7(91);
@@ -84,7 +86,13 @@ template Verifier(depth) {
     log(hashNode[i+1].out);
   }
 
-  // hashNode[depth].out === root;
+  hashNode[depth].out === root;
+
+  component creditScoreCondition = LessThan(8);
+  creditScoreCondition.in[0] <== creditScore;
+  creditScoreCondition.in[1] <== condition;
+
+  creditScoreCondition.out === 1;
 }
 
-component main = Verifier(4);
+component main{public[subPub, verifyTimestamp, condition, signature]} = Verifier(4);
