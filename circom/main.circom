@@ -70,6 +70,8 @@ template Verifier(depth) {
   hashNode[0] = Node();
   hashNode[0].leaf <== MimcMultiLeaf.out;
 
+  log(MimcMultiLeaf.out)
+
   for (var i = 0; i < depth; i++) {
     MimcUpdate[i] = MultiMimc7(2, 91);
     selectiveSwitch[i] = SelectiveSwitch();
@@ -89,8 +91,8 @@ template Verifier(depth) {
   hashNode[depth].out === root;
 
   component creditScoreCondition = LessThan(8);
-  creditScoreCondition.in[0] <== creditScore;
-  creditScoreCondition.in[1] <== condition;
+  creditScoreCondition.in[0] <== condition;
+  creditScoreCondition.in[1] <== creditScore;
 
   creditScoreCondition.out === 1;
 }

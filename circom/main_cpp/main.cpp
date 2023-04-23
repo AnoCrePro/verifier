@@ -1774,7 +1774,7 @@ uint cmp_index_ref = 15;
 PFrElement aux_dest = &ctx->signalValues[ctx->componentMemory[mySubcomponents[cmp_index_ref]].signalStart + 1];
 // load src
 // end load src
-Fr_copy(aux_dest,&signalValues[mySignalStart + 7]);
+Fr_copy(aux_dest,&signalValues[mySignalStart + 3]);
 }
 // no need to run sub component
 assert(ctx->componentMemory[mySubcomponents[cmp_index_ref]].inputCounter -= 1);
@@ -1785,7 +1785,7 @@ uint cmp_index_ref = 15;
 PFrElement aux_dest = &ctx->signalValues[ctx->componentMemory[mySubcomponents[cmp_index_ref]].signalStart + 2];
 // load src
 // end load src
-Fr_copy(aux_dest,&signalValues[mySignalStart + 3]);
+Fr_copy(aux_dest,&signalValues[mySignalStart + 7]);
 }
 // need to run sub component
 assert(!(ctx->componentMemory[mySubcomponents[cmp_index_ref]].inputCounter -= 1));
