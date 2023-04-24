@@ -32,7 +32,6 @@ template Node () {
     out <== leaf;
 }
 
-
 template Verifier(depth) {
   signal input mainPub; //
   signal input subPub; //
@@ -70,7 +69,7 @@ template Verifier(depth) {
   hashNode[0] = Node();
   hashNode[0].leaf <== MimcMultiLeaf.out;
 
-  log(MimcMultiLeaf.out)
+  // log(MimcMultiLeaf.out);
 
   for (var i = 0; i < depth; i++) {
     MimcUpdate[i] = MultiMimc7(2, 91);
@@ -85,7 +84,7 @@ template Verifier(depth) {
     MimcUpdate[i].k <== 0;
 
     hashNode[i + 1].leaf <== MimcUpdate[i].out;
-    log(hashNode[i+1].out);
+    // log(hashNode[i+1].out);
   }
 
   hashNode[depth].out === root;
@@ -97,4 +96,4 @@ template Verifier(depth) {
   creditScoreCondition.out === 1;
 }
 
-component main{public[subPub, verifyTimestamp, condition, signature]} = Verifier(4);
+component main{public[subPub, verifyTimestamp, condition, signature]} = Verifier(16);
