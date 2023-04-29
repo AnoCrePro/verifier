@@ -52,7 +52,6 @@ template Verifier(depth) {
   MimcMulti.in[1] <== subPub;
   MimcMulti.in[2] <== userInfo;
   MimcMulti.k <== 0;
-  
   authHash === MimcMulti.out;
 
   component MimcMultiLeaf = MultiMimc7(3, 91);
@@ -84,12 +83,13 @@ template Verifier(depth) {
     MimcUpdate[i].k <== 0;
 
     hashNode[i + 1].leaf <== MimcUpdate[i].out;
-    // log(hashNode[i+1].out);
+    log(hashNode[i+1].out);
   }
 
   hashNode[depth].out === root;
 
-  component creditScoreCondition = LessThan(8);
+  log(hashNode[depth].out);
+  component creditScoreCondition = LessThan(10);
   creditScoreCondition.in[0] <== condition;
   creditScoreCondition.in[1] <== creditScore;
 
