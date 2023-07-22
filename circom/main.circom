@@ -1,10 +1,8 @@
 pragma circom 2.1.2;
 
-include "../node_modules/circomlib/circuits/mimc.circom";
-include "../node_modules/circomlib/circuits/switcher.circom";
+include "./switcher.circom";
 include "./mimc.circom";
-include "../node_modules/circomlib/circuits/poseidon.circom";
-include "../node_modules/circomlib/circuits/comparators.circom";
+include "./comparators.circom";
 
 template SelectiveSwitch() {
   signal input in0;
@@ -33,30 +31,29 @@ template Node () {
 }
 
 template Verifier(depth) {
-  signal input mainPub; //
-  signal input subPub; //
-  signal input userInfo; //
-  signal input authHash; //
-  signal input creditScore; //
-  signal input timestamp; //
-  signal input root; //
-  signal input verifyTimestamp;
-  signal input signature;
+  signal input publicKey; 
+  signal input balance; 
+  signal input accountNumber; 
+  signal input pass; 
+  signal input authHash; 
+  signal input timestamp; 
+  signal input root; 
   signal input condition;
-  signal input direction[depth]; //
-  signal input siblings[depth]; //
+  signal input verifyTimestamp;
+  signal input direction[depth]; 
+  signal input siblings[depth]; 
 
   // Check owner by auth hash 
   component MimcMulti = MultiMimc7(3, 91);
-  MimcMulti.in[0] <== mainPub;
-  MimcMulti.in[1] <== subPub;
-  MimcMulti.in[2] <== userInfo;
+  MimcMulti.in[0] <== publicKey;
+  MimcMulti.in[1] <== accountNumber;
+  MimcMulti.in[2] <== pass;
   MimcMulti.k <== 0;
   authHash === MimcMulti.out;
 
   component MimcMultiLeaf = MultiMimc7(3, 91);
   MimcMultiLeaf.in[0] <== authHash;
-  MimcMultiLeaf.in[1] <== creditScore;
+  MimcMultiLeaf.in[1] <== balance;
   MimcMultiLeaf.in[2] <== timestamp;
   MimcMultiLeaf.k <== 0;
   // component Mimc = Mimc7(91);
@@ -89,11 +86,13 @@ template Verifier(depth) {
   hashNode[depth].out === root;
 
   log(hashNode[depth].out);
-  component creditScoreCondition = LessThan(10);
-  creditScoreCondition.in[0] <== condition;
-  creditScoreCondition.in[1] <== creditScore;
+  component compare = LessEqThan(70);
+  compare.in[0] <== condition;
+  compare.in[1] <== balance;
+  log(balance);
+  log(condition);
 
-  creditScoreCondition.out === 1;
+  compare.out === 1;
 }
 
-component main{public[subPub, verifyTimestamp, condition, signature]} = Verifier(16);
+component main{public[accountNumber, balance, verifyTimestamp]} = Verifier(16);
