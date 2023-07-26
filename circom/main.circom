@@ -95,4 +95,4 @@ template Verifier(depth) {
   compare.out === 1;
 }
 
-component main{public[accountNumber, root, verifyTimestamp]} = Verifier(16);
+component main{public[accountNumber, balance, root, verifyTimestamp]} = Verifier(16);
